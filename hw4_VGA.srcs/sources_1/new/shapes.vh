@@ -1,34 +1,58 @@
+// 方块查找表，使用 include 放入需要 shape() 函数的模块。
+// kind：0=I，1=O，2=T，3=J，4=L，5=S，6=Z；r 为 0..3 四个方向。
+// 16 位返回值表示 4x4 掩码：bit[4*y+x] 为 1 时，该格属于方块。
+// 位编号：第一行 0,1,2,3；第二行 4,5,6,7；依次到第四行 12,13,14,15。
+// 每个方向按包围盒左上角归一化；旋转不含踢墙偏移。
+// {k,r} 等价于 k*4+r。表内保留对称方块的重复方向，简化索引。
+
 function [15:0] shape;
- input [2:0] k; input [1:0] r;
- begin case({k,r})
- 5'd0: shape=16'h000F;
- 5'd1: shape=16'h1111;
- 5'd2: shape=16'h000F;
- 5'd3: shape=16'h1111;
- 5'd4: shape=16'h0033;
- 5'd5: shape=16'h0033;
- 5'd6: shape=16'h0033;
- 5'd7: shape=16'h0033;
- 5'd8: shape=16'h0027;
- 5'd9: shape=16'h0232;
- 5'd10: shape=16'h0072;
- 5'd11: shape=16'h0131;
- 5'd12: shape=16'h0071;
- 5'd13: shape=16'h0113;
- 5'd14: shape=16'h0047;
- 5'd15: shape=16'h0322;
- 5'd16: shape=16'h0074;
- 5'd17: shape=16'h0311;
- 5'd18: shape=16'h0017;
- 5'd19: shape=16'h0223;
- 5'd20: shape=16'h0036;
- 5'd21: shape=16'h0231;
- 5'd22: shape=16'h0036;
- 5'd23: shape=16'h0231;
- 5'd24: shape=16'h0063;
- 5'd25: shape=16'h0132;
- 5'd26: shape=16'h0063;
- 5'd27: shape=16'h0132;
- default:shape=16'h000F;
- endcase end
+    input [2:0] k;
+    input [1:0] r;
+    begin
+        case ({k, r})
+
+            // I：直条
+            5'd0: shape = 16'h000F;  // 方向 0
+            5'd1: shape = 16'h1111;  // 方向 1
+            5'd2: shape = 16'h000F;  // 方向 2
+            5'd3: shape = 16'h1111;  // 方向 3
+
+            // O：方块
+            5'd4: shape = 16'h0033;  // 方向 0
+            5'd5: shape = 16'h0033;  // 方向 1
+            5'd6: shape = 16'h0033;  // 方向 2
+            5'd7: shape = 16'h0033;  // 方向 3
+
+            // T：T 型
+            5'd8: shape = 16'h0027;  // 方向 0
+            5'd9: shape = 16'h0232;  // 方向 1
+            5'd10: shape = 16'h0072;  // 方向 2
+            5'd11: shape = 16'h0131;  // 方向 3
+
+            // J：左钩
+            5'd12: shape = 16'h0071;  // 方向 0
+            5'd13: shape = 16'h0113;  // 方向 1
+            5'd14: shape = 16'h0047;  // 方向 2
+            5'd15: shape = 16'h0322;  // 方向 3
+
+            // L：右钩
+            5'd16: shape = 16'h0074;  // 方向 0
+            5'd17: shape = 16'h0311;  // 方向 1
+            5'd18: shape = 16'h0017;  // 方向 2
+            5'd19: shape = 16'h0223;  // 方向 3
+
+            // S：S 型
+            5'd20: shape = 16'h0036;  // 方向 0
+            5'd21: shape = 16'h0231;  // 方向 1
+            5'd22: shape = 16'h0036;  // 方向 2
+            5'd23: shape = 16'h0231;  // 方向 3
+
+            // Z：Z 型
+            5'd24: shape = 16'h0063;  // 方向 0
+            5'd25: shape = 16'h0132;  // 方向 1
+            5'd26: shape = 16'h0063;  // 方向 2
+            5'd27: shape = 16'h0132;  // 方向 3
+            default: shape = 16'h000F;
+        endcase
+    end
 endfunction
